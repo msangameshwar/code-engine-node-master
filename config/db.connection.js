@@ -1,4 +1,4 @@
-const dbConfig = require("../dbConfig/mysql.config");
+const dbConfig = require("./db.config");
 
 const Sequelize = require("sequelize");
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
@@ -23,6 +23,6 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.trades = require("./trades.model.js")(sequelize, Sequelize);
+db.trades = require("../modules/trades.model")(sequelize, Sequelize);
 
 module.exports = db;

@@ -1,7 +1,7 @@
 const joi = require("joi");
 
 const tradeSchema = joi.object({
-  type: joi.string().required(),
+  type: joi.string().valid("buy", "sale").required(),
   user_id: joi.number().required(),
   symbol: joi.string().required(),
   shares: joi.number().min(1).max(100).required().messages({
@@ -11,7 +11,7 @@ const tradeSchema = joi.object({
 });
 
 const patchTradeSchema = joi.object({
-  type: joi.string(),
+  type: joi.string().valid("buy", "sale"),
   user_id: joi.number(),
   symbol: joi.string(),
   shares: joi.number().min(1).max(100).messages({
@@ -27,7 +27,9 @@ const postValidation = async (req, res, next) => {
 const patchValidation = async (req, res, next) => {
   return await validationHelper(req.body, res, next, patchTradeSchema);
 };
+
 const validationHelper = async (body, res, next, schema) => {
+  
   const options = {
     abortEarly: false, // include all errors
     allowUnknown: true, // ignore unknown props
@@ -35,6 +37,7 @@ const validationHelper = async (body, res, next, schema) => {
   };
   try {
     const { error, value } = await schema.validate(body, options);
+
     if (error) {
       return res.status(400).send(error.details[0].message);
     } else {
